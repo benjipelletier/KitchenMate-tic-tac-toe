@@ -11,15 +11,35 @@ class App extends Component {
     super();
     this.state = {
       turn: 0,
-      gameOver: false
+      newGame: true,
+      gameOver: false,
+      board: Array(9).fill(-1),
+      wins: [[]]
     }
   }
 
-  clicked(e) {
-    console.log(e.target);
+  restart = () => {
     this.setState({
+      turn: 0,
+      newGame: true,
+      gameOver: false,
+      board: Array(9).fill(-1)
+    })
+  }
+
+
+  clicked = (id, val) => {
+    console.log(this.state)
+    const newBoard = this.state.board.map((x, i) => i == id ? val : x)
+    this.setState({
+      newGame: false,
+      board: newBoard,
       turn: +!this.state.turn
     })
+  }
+
+  checkWinner() {
+
   }
   render() {
     return (
@@ -27,17 +47,13 @@ class App extends Component {
         <div id="head">
           KitchenMate Tic Tac Toe
         </div>
-        <div id="board" onClick={(e)=>this.clicked(e)}>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
-          <Square turn={this.state.turn}/>
+        <div id="board">
+          {this.state.board.map((placed, i) => (
+            <Square turn={this.state.turn} key={i} id={i} newGame={this.state.newGame} 
+                    filled={placed} callBack={this.clicked}/>)
+            )}
         </div>
+        <button onClick={this.restart}>Restart</button>
       </div>
     );
   }

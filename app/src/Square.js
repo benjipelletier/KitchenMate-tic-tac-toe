@@ -5,18 +5,28 @@ import './App.css';
 
 class App extends Component {
   
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       img: ""
+
     }
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.newGame) {
+      this.setState({
+        img: ""
+      })
+    }
+  }
   clicked(e) {
-    console.log(e.target);
-    this.setState({
-      img: this.props.turn ? donut : cinnamon
-    })
+    if (this.props.filled == -1) {
+      this.setState({
+        turn: this.props.turn,
+        img: this.props.turn ? donut : cinnamon
+      })
+      this.props.callBack(this.props.id, this.props.turn);
+    }
   }
   render() {
     return (
