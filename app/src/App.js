@@ -12,9 +12,10 @@ class App extends Component {
     this.state = {
       turn: 0,
       newGame: true,
+      winner: "",
       gameOver: false,
       board: Array(9).fill(-1),
-      wins: [[]]
+      wins: [[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [2, 4, 6]]
     }
   }
 
@@ -23,23 +24,47 @@ class App extends Component {
       turn: 0,
       newGame: true,
       gameOver: false,
+      winner: "",
       board: Array(9).fill(-1)
     })
   }
 
 
+
+
   clicked = (id, val) => {
-    console.log(this.state)
     const newBoard = this.state.board.map((x, i) => i == id ? val : x)
+    this.checkWinner(newBoard)
+    this.checkDraw(newBoard)
     this.setState({
       newGame: false,
       board: newBoard,
       turn: +!this.state.turn
     })
+    console.log(this.state.board, newBoard)
+    
   }
 
-  checkWinner() {
+  checkDraw(board) {
+    for (let i = 0; i < board.length; ++i) {
+      if ((board[i]) == -1) return false
+    }
+    this.setState({
+      gameOver: true,
+      winner: "Tie!"
+    })
+  }
 
+  checkWinner(board) {
+    let wins = this.state.wins
+    for (let i = 0; i < this.state.wins.length; ++i) {
+      if (board[wins[i][0]] == board[wins[i][1]] && board[wins[i][1]] == board[wins[i][2]] && board[wins[i][2]] != -1) {
+        this.setState({
+          gameOver: true,
+          winner: board[wins[i][2]] ? "Donut" : "Cinnamon Stick"
+        })
+      }
+    }
   }
   render() {
     return (
@@ -49,11 +74,12 @@ class App extends Component {
         </div>
         <div id="board">
           {this.state.board.map((placed, i) => (
-            <Square turn={this.state.turn} key={i} id={i} newGame={this.state.newGame} 
+            <Square turn={this.state.turn} key={i} id={i} gameOver={this.state.gameOver} newGame={this.state.newGame} 
                     filled={placed} callBack={this.clicked}/>)
             )}
         </div>
         <button onClick={this.restart}>Restart</button>
+        {this.state.gameOver && <h1>{this.state.winner} {this.state.winner != "Tie!" && "Wins"}</h1>}
       </div>
     );
   }

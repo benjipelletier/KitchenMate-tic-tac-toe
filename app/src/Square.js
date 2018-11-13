@@ -20,7 +20,7 @@ class App extends Component {
     }
   }
   clicked(e) {
-    if (this.props.filled == -1) {
+    if (this.props.filled == -1 && !this.props.gameOver) {
       this.setState({
         turn: this.props.turn,
         img: this.props.turn ? donut : cinnamon
